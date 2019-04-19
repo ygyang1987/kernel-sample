@@ -59,7 +59,7 @@ static void thread2_entry(void *param)
     rt_kprintf("\nthread2 exit\n");
 }
 
-/* 删除线程示例的初始化 */
+/* 线程示例 */
 int thread_sample(void)
 {
     /* 创建线程1（动态），名称是thread1，入口是thread1_entry。必须获得返回值，即动态分配的控制块的指针。*/
@@ -78,7 +78,7 @@ int thread_sample(void)
                    thread2_entry,
                    RT_NULL,
                    &thread2_stack[0], /* 静态时：线程栈的指针也需要传入。*/
-                   sizeof(thread2_stack), /* 静态时：线程栈的大小用sizeof获得并传入，方便修改后。*/
+                   sizeof(thread2_stack), /* 静态时：线程栈的大小用sizeof获得并传入；这样如果在变量定义处修改长度，此处也不用再改。*/
                    THREAD_PRIORITY - 1, THREAD_TIMESLICE);
 									 rt_thread_startup(&thread2);
     /* 静态时：初始化后无需确认分配是否成功。因为编译时已经分配好。 */
