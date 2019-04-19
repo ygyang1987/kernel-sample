@@ -28,7 +28,7 @@ static void thread1_entry(void *parameter)
     rt_uint32_t i;
     char *ptr = RT_NULL; /* 内存块的指针 */
 
-    malloc_size = *((rt_uint32_t*) parameter);
+    malloc_size = (rt_uint32_t) parameter;
     for (i = 0; ; i++)
     {
         ptr = rt_malloc(malloc_size); 
@@ -59,7 +59,7 @@ static void thread1_entry(void *parameter)
 static int dynmem_sample(int argc, char**argv)
 {
     extern rt_uint32_t str2dec(char* str);
-    static rt_uint32_t temp;
+    rt_uint32_t temp;
     rt_thread_t tid;
 
     if (argc < 1)
@@ -78,7 +78,7 @@ static int dynmem_sample(int argc, char**argv)
 
     /* 创建线程1 */
     tid = rt_thread_create("thread1",
-                           thread1_entry, &temp,
+                           thread1_entry, (void*)temp,
                            THREAD_STACK_SIZE,
                            THREAD_PRIORITY,
                            THREAD_TIMESLICE);
