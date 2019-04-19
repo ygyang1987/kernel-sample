@@ -12,7 +12,8 @@
  * 程序清单：动态内存管理例程
  *
  * 这个程序会创建一个动态的线程，这个线程会动态申请内存并释放
- * 每次申请更大的内存，当申请不到的时候就结束
+ * 每次申请双倍的内存，当申请不到的时候就结束
+ * -改写：通过输入参数确定第一次申请空间的大小。
  */
 #include <rtthread.h>
 
@@ -21,28 +22,35 @@
 #define THREAD_TIMESLICE     5
 
 /* 线程入口 */
-void thread1_entry(void *parameter)
+static void thread1_entry(void *parameter)
 {
-    int i;
+    rt_uint32_t malloc_size;
+    rt_uint32_t i;
     char *ptr = RT_NULL; /* 内存块的指针 */
 
+    malloc_size = *((rt_uint32_t*) parameter);
     for (i = 0; ; i++)
     {
-        /* 每次分配 (1 << i) 大小字节数的内存空间 */
-        ptr = rt_malloc(1 << i);
-
-        /* 如果分配成功 */
-        if (ptr != RT_NULL)
+        ptr = rt_malloc(malloc_size); 
+        if (ptr != RT_NULL) /* 如果分配失败会返回RT_NULL，成功就不会 */
         {
-            rt_kprintf("get memory :%d byte\n", (1 << i));
+            rt_kprintf("get memory :%d byte\n", (malloc_size));
             /* 释放内存块 */
             rt_free(ptr);
-            rt_kprintf("free memory :%d byte\n", (1 << i));
+            rt_kprintf("free memory :%d byte\n", (malloc_size));
             ptr = RT_NULL;
+					  if (malloc_size>(RT_UINT32_MAX>>1))
+						{
+						  return;
+						}
+						else
+						{
+					    malloc_size <<=1;
+						}
         }
         else
         {
-            rt_kprintf("try to get %d byte memory failed!\n", (1 << i));
+            rt_kprintf("try to get %d byte memory failed!\n", (malloc_size));
             return;
         }
     }
