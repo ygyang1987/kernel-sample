@@ -35,18 +35,18 @@ static void thread1_entry(void *parameter)
         if (ptr != RT_NULL) /* 如果分配失败会返回RT_NULL，成功就不会 */
         {
             rt_kprintf("get memory :%d byte\n", (malloc_size));
-            /* 释放内存块 */
-            rt_free(ptr);
+            rt_free(ptr);/* 释放内存块 */
             rt_kprintf("free memory :%d byte\n", (malloc_size));
             ptr = RT_NULL;
-					  if (malloc_size>(RT_UINT32_MAX>>1))
-						{
-						  return;
-						}
-						else
-						{
-					    malloc_size <<=1;
-						}
+
+            if (malloc_size>(RT_UINT32_MAX>>1))
+            {
+                return;
+            }
+            else
+            {
+                malloc_size <<=1;
+            }
         }
         else
         {
@@ -66,15 +66,15 @@ static int dynmem_sample(int argc, char**argv)
     {
         temp = 1;
     }
-	  else 
-		{
+    else 
+    {
         temp = str2dec(argv[1]);
-		}
+    }
 
-		if(temp == 0)
-		{
-			temp = 1;
-		}
+    if(temp == 0)
+    {
+        temp = 1;
+    }
 
     /* 创建线程1 */
     tid = rt_thread_create("thread1",
