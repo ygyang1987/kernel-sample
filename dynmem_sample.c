@@ -56,13 +56,29 @@ static void thread1_entry(void *parameter)
     }
 }
 
-int dynmem_sample(void)
+static int dynmem_sample(int argc, char**argv)
 {
-    rt_thread_t tid = RT_NULL;
+    extern rt_uint32_t str2dec(char* str);
+    static rt_uint32_t temp;
+    rt_thread_t tid;
+
+    if (argc < 1)
+    {
+        temp = 1;
+    }
+	  else 
+		{
+        temp = str2dec(argv[1]);
+		}
+
+		if(temp == 0)
+		{
+			temp = 1;
+		}
 
     /* 创建线程1 */
     tid = rt_thread_create("thread1",
-                           thread1_entry, RT_NULL,
+                           thread1_entry, &temp,
                            THREAD_STACK_SIZE,
                            THREAD_PRIORITY,
                            THREAD_TIMESLICE);
